@@ -1,5 +1,7 @@
 package com.example.app.server;
 
+import com.example.app.server.Commands.Commands;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,6 +12,8 @@ public class ServerListener {
 
     public ServerListener(){
         this.broadCaster = new BroadCaster();
+        Commands.addBroadCaster(broadCaster);
+        Commands.setup();
     }
 
     public void start() {

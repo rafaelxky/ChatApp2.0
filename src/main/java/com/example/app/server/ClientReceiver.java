@@ -1,5 +1,8 @@
 package com.example.app.server;
 
+import com.example.app.server.Commands.Command;
+import com.example.app.server.Commands.Commands;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,6 +49,24 @@ public class ClientReceiver implements Runnable {
         String message;
         while ((message = in.readLine()) != null) {
             System.out.println(this.client.name + ": " + message);
+            if (message.startsWith("-")){
+                Command command = Commands.execute(message);
+                switch (command.getScope()){
+                    case ALL: {
+                        broadCaster.broadcast(command.execute(), this.sender);
+                        break;
+                    }
+                    case SELF: {
+                        serverMessage(command.execute());
+                        break;
+                    }
+                    case ALLANDSELF: {
+                        broadCaster.broadcastAllAndSelf(command.execute(), this.sender);
+                        break;
+                    }
+                }
+                continue;
+            }
             broadCaster.broadcast(message, this.sender);
         }
         System.out.println(this.client.name + " closed the connection");

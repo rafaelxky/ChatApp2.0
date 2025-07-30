@@ -26,4 +26,31 @@ public class BroadCaster {
             }
         }
     }
+
+    public void privateMessage(String receiverName, String message){
+        for (Client client : clientList){
+            if (client.name.equals(receiverName)){
+                try {
+                    client.clientSender.send(message);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+        }
+    }
+
+    public void broadcastAllAndSelf(String message, ClientSender sender){
+        for (Client client : clientList){
+            try {
+                if (client.clientSender != sender) {
+                    client.clientSender.send(client.name + ": " + message);
+                } else {
+                    client.clientSender.send(message);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
